@@ -1,6 +1,5 @@
 import React, {useRef, useState} from 'react'
 import {useGlobalContext} from '../contexts/AuthProvider'
-import {Link, useNavigate} from 'react-router-dom'
 
 const ForgotPassword = () => {
 

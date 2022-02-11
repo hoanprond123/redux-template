@@ -1,4 +1,4 @@
-import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT_REQUEST, LOGOUT_SUCCESS, LOGOUT_FAILURE } from "./loginType";
+import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT_REQUEST, LOGOUT_SUCCESS, LOGOUT_FAILURE, SET_USER } from "./loginType";
 import {auth} from '../../firebase'
 export const loginRequest = () => {
     return {
@@ -60,5 +60,12 @@ export const logout1 = () => {
                 dispatch(logoutSuccess());
             })
             .catch((error) => dispatch(logoutFailure(error.message)))
+    }
+}
+
+export const setUser = (user) => {
+    return {
+        type: SET_USER,
+        payload: user
     }
 }

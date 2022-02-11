@@ -19,6 +19,7 @@ const User = () => {
             dispatch(logout1())
             navigate('/login')
         }
+        console.log(user)
     }
 
     // Sử dụng useContext
