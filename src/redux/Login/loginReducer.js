@@ -1,4 +1,4 @@
-import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT_REQUEST, LOGOUT_SUCCESS, LOGOUT_FAILURE, SET_USER } from "./loginType";
+import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT_REQUEST, LOGOUT_SUCCESS, LOGOUT_FAILURE, SET_USER, SIGNUP_REQUEST, SIGNUP_SUCCESS, SIGNUP_FAILURE } from "./loginType";
 
 const initialState = {
     loading: false,
@@ -10,10 +10,12 @@ const loginReducer = (state = initialState, action) => {
     switch (action.type) {
         case LOGIN_REQUEST:
         case LOGOUT_REQUEST:
+        case SIGNUP_REQUEST:
             return {
                 ...state,
                 loading: true
             }
+        case SIGNUP_SUCCESS:
         case LOGIN_SUCCESS:
             return {
                 ...state,
@@ -32,6 +34,7 @@ const loginReducer = (state = initialState, action) => {
             }
         case LOGIN_FAILURE:
         case LOGOUT_FAILURE:
+        case SIGNUP_FAILURE:
             return {
                 ...state,
                 loading: false,

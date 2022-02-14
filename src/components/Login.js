@@ -7,7 +7,7 @@ const Login = () => {
 
     const emailRef = useRef()
     const passwordRef = useRef()
-    const {currentUser, login} = useGlobalContext()
+    // const {currentUser, login} = useGlobalContext()
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
@@ -15,21 +15,23 @@ const Login = () => {
     const user = useSelector((state) => state.login.currentUser)
 
 
+
+
     // Sử dụng useContext
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
 
 
-        try {
-            setError('')
-            setLoading(true)
-            await login(emailRef.current.value, passwordRef.current.value)
-            navigate('/')
-        } catch {
-            setError('Failed to login')
-        }
-        setLoading(false)
-    }
+    //     try {
+    //         setError('')
+    //         setLoading(true)
+    //         await login(emailRef.current.value, passwordRef.current.value)
+    //         navigate('/')
+    //     } catch {
+    //         setError('Failed to login')
+    //     }
+    //     setLoading(false)
+    // }
 
     
 
@@ -51,6 +53,7 @@ const Login = () => {
             <div className="grid wide form-sign-up-inside">
                 <div className="form-sign-up-container">
                     <h2>Login</h2>
+                    {/* {<h2>{user.email}</h2>} */}
                     {error && <h1>{error}</h1>}
                     <form onSubmit={handleSend}>
                         <div className="form-sign-up-input">

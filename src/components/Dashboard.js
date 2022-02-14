@@ -22,7 +22,7 @@ import {
   checkEdit
 } from "../redux/List/listAction";
 import { setUser } from "../redux/Login/loginAction";
-import { auth } from "../firebase";
+import { auth, fs, storage } from "../firebase";
 
 const Dashboard = () => {
   //-------------Sử dụng useContext--------------------//
@@ -70,11 +70,12 @@ const Dashboard = () => {
   const dateInput = useSelector((state) => state.list.date);
   const userEdit = useSelector((state) => state.list.userInfor);
   const editCheck = useSelector((state) => state.list.checkedEdit)
-
-
+  const currentUser = useSelector((state) => state.list.currentUser)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     dispatch(fetchLists());
+    console.log(storage)
   }, []);
 
   const handleAdd = (event) => {
@@ -89,7 +90,6 @@ const Dashboard = () => {
         checked: editCheck
       };
 
-      console.log(addNew.checked);
 
       dispatch(informationUser(addNew));
       navigate("/");
@@ -105,15 +105,8 @@ const Dashboard = () => {
     }
   };
 
-  useEffect(() => {
-    auth.onAuthStateChanged((authUser) => {
-      if (authUser) {
-        dispatch(setUser(authUser));
-      } else {
-        dispatch(setUser(null));
-      }
-    });
-  }, [dispatch]);
+  
+
 
   const handleDelete1 = (id) => {
     dispatch(informationUserDelete(id));
@@ -121,87 +114,90 @@ const Dashboard = () => {
 
   const handleEdit1 = (id) => {
     dispatch(editItem(id));
-    console.log('xinchao')
   };
 
   return (
-    <>
-      <Navbar />
-      <div className="form-sign-up">
-        <div className="grid wide form-sign-up-inside">
-          <div className="form-sign-up-container">
-            <h2>Add information</h2>
-            <form onSubmit={handleAdd}>
-              <div className="form-sign-up-input">
-                <label>Your Name</label>
-                <input
-                  onChange={(e) => dispatch(inputName(e.target.value))}
-                  type="text"
-                  value={nameInput}
-                  placeholder="your name"
-                  required
-                />
-              </div>
-              <div className="form-sign-up-input">
-                <label>Your number</label>
-                <input
-                  onChange={(e) => dispatch(inputNumber(e.target.value))}
-                  type="number"
-                  value={numberInput}
-                  placeholder="your number"
-                  required
-                />
-              </div>
-              <div className="form-sign-up-input">
-                <label>Your email</label>
-                <input
-                  onChange={(e) => dispatch(inputEmail(e.target.value))}
-                  type="email"
-                  value={emailInput}
-                  placeholder="your email"
-                  required
-                />
-              </div>
-              <div className="form-sign-up-input">
-                <label>Your date of birth</label>
-                <DatePicker
-                  selected={dateInput}
-                  onChange={(date) => dispatch(inputDate(date))}
-                />
-              </div>
-              <div className="form-sign-up-input">
-                <label>Edit ?</label>
-                <input checked={editCheck} type="checkbox" onChange={(e) => dispatch(checkEdit(e.target.checked))} value={editCheck} />
-              </div>
-              <button className="btn">{userEdit ? "edit" : "add"}</button>
-            </form>
-          </div>
+      <>
+        <Navbar />
+    <div className="form-sign-up">
+      <div className="grid wide form-sign-up-inside">
+        <div className="form-sign-up-container">
+          <h2>Add information</h2>
+          <form onSubmit={handleAdd}>
+            {/* {<h2>{currentUser.email}</h2>} */}
+            <div className="form-sign-up-input">
+              <label>Your Name</label>
+              <input
+                onChange={(e) => dispatch(inputName(e.target.value))}
+                type="text"
+                value={nameInput}
+                placeholder="your name"
+                required
+              />
+            </div>
+            <div className="form-sign-up-input">
+              <label>Your number</label>
+              <input
+                onChange={(e) => dispatch(inputNumber(e.target.value))}
+                type="number"
+                value={numberInput}
+                placeholder="your number"
+                required
+              />
+            </div>
+            <div className="form-sign-up-input">
+              <label>Your email</label>
+              <input
+                onChange={(e) => dispatch(inputEmail(e.target.value))}
+                type="email"
+                value={emailInput}
+                placeholder="your email"
+                required
+              />
+            </div>
+            <div className="form-sign-up-input">
+              <label>Your date of birth</label>
+              <DatePicker
+                selected={dateInput}
+                onChange={(date) => dispatch(inputDate(date))}
+              />
+            </div>
+            <div className="form-sign-up-input">
+              <label>Edit ?</label>
+              <input checked={editCheck} type="checkbox" onChange={(e) => dispatch(checkEdit(e.target.checked))} value={editCheck} />
+            </div>
+            <button className="btn">{userEdit ? "edit" : "add"}</button>
+          </form>
         </div>
       </div>
-      <div className="lists">
-        <div className="grid wide">
-          <Table dataSource={listsUser} rowKey="id">
-            <Column title="Name" dataIndex="name" />
-            <Column title="Phone number" dataIndex="phone" />
-            <Column title="Email" dataIndex="email" />
-            <Column title="Date" dataIndex="date" />
-            <Column
-              title="Action"
-              render={(text, record) => (
-                <Space size="middle">
-                  <Button onClick={() => handleDelete1(record.id)}>
-                    Delete
-                  </Button>
-                  <Button disabled={record.checked} onClick={() => handleEdit1(record.id) }>Edit</Button>
-                </Space>
-              )}
-            />
-          </Table>
-        </div>
+    </div>
+    <div className="lists">
+      <div className="grid wide">
+        <Table dataSource={listsUser} rowKey="id">
+          <Column title="Name" dataIndex="name" />
+          <Column title="Phone number" dataIndex="phone" />
+          <Column title="Email" dataIndex="email" />
+          <Column title="Date" dataIndex="date" />
+          <Column
+            title="Action"
+            render={(text, record) => (
+              <Space size="middle">
+                <Button onClick={() => handleDelete1(record.id)}>
+                  Delete
+                </Button>
+                <Button disabled={record.checked} onClick={() => handleEdit1(record.id) }>Edit</Button>
+              </Space>
+            )}
+          />
+        </Table>
       </div>
-      <Button onClick={() => dispatch(increase(2))}>Click</Button>
-      <h2>Test number: {numberIncrement}</h2>
-    </>
+    </div>
+    <Button onClick={() => dispatch(increase(2))}>Click</Button>
+    <h2>Test number: {numberIncrement}</h2>
+      </>
+    
+    
+      
   );
 };
 

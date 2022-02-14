@@ -1,6 +1,10 @@
-import React, {useRef, useState} from 'react'
+import React, {useRef, useState, useEffect} from 'react'
 import {useGlobalContext} from '../contexts/AuthProvider'
 import {Link, useNavigate} from 'react-router-dom'
+
+import {signup1} from '../redux/Login/loginAction'
+import { useDispatch, useSelector } from 'react-redux'
+
 
 const SignUp = () => {
 
@@ -11,7 +15,8 @@ const SignUp = () => {
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
-
+    const user = useSelector((state) => state.login.currentUser)
+    const dispatch = useDispatch()
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -32,13 +37,29 @@ const SignUp = () => {
         
     }
 
+    const handleSignup = (e) => {
+        e.preventDefault()
+
+        if(passwordRef.current.value !== passwordConfirmationRef.current.value) {
+            return setError('Password do not match')
+        }
+
+        dispatch(signup1(emailRef.current.value, passwordRef.current.value))
+    }
+
+    useEffect(() => {
+        if(user) {
+            navigate('/')
+        }
+    },[user])
+
     return (
         <div className="form-sign-up">
             <div className="grid wide form-sign-up-inside">
                 <div className="form-sign-up-container">
                     <h2>Sign Up</h2>
                     {error && <h1>{error}</h1>}
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSignup}>
                         <div className="form-sign-up-input">
                             <label>Email</label>
                             <input ref={emailRef} type="email" placeholder="your email address" required /> 

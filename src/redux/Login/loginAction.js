@@ -1,5 +1,6 @@
-import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT_REQUEST, LOGOUT_SUCCESS, LOGOUT_FAILURE, SET_USER } from "./loginType";
-import {auth} from '../../firebase'
+import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT_REQUEST, LOGOUT_SUCCESS, LOGOUT_FAILURE, SET_USER, SIGNUP_REQUEST, SIGNUP_SUCCESS, SIGNUP_FAILURE } from "./loginType";
+import {auth, fs} from '../../firebase'
+
 export const loginRequest = () => {
     return {
         type: LOGIN_REQUEST
@@ -69,3 +70,40 @@ export const setUser = (user) => {
         payload: user
     }
 }
+
+
+export const signupRequest = () => {
+    return {
+        type: SIGNUP_REQUEST
+    }
+}
+
+export const signupSuccess = (user) => {
+    return {
+        type: SIGNUP_SUCCESS,
+        payload: user
+    }
+}
+
+export const signupFailure = (error) => {
+    return {
+        type: SIGNUP_FAILURE,
+        payload: error
+    }
+}
+
+export const signup1 = (email, password) => {
+    return (dispatch) => {
+        dispatch(signupRequest())
+        auth
+            .createUserWithEmailAndPassword(email, password)
+            .then(({user}) => {
+                dispatch(signupSuccess(user));
+                return fs.collection('users').doc(user.uid).set({
+                    Email: user.email
+                })
+            })
+            .catch((error) => dispatch(signupFailure(error.message)))
+    }
+}
+

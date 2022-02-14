@@ -22,7 +22,6 @@ function AuthProvider({children}) {
             try {
                 const response = await api.get('/lists')
                 setLists(response.data.reverse())
-                console.log(lists)
             } catch(error) {
                 console.log(error.message)
             }
